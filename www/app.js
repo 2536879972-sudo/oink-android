@@ -624,25 +624,44 @@ function init() {
 
 document.addEventListener('DOMContentLoaded', init);
 
-
 /* ---------------- 启动页：强制播放视频 + 3.2s 后移除 ---------------- */
 (function(){
+  function hardPlay(v){
+    try {
+      v.muted = true;
+      v.defaultMuted = true;
+      v.volume = 0;
+      v.playsInline = true;
+      v.controls = false;
+      v.setAttribute('muted', '');
+      v.setAttribute('playsinline', '');
+      v.setAttribute('webkit-playsinline', '');
+      v.setAttribute('autoplay', '');
+      var p = v.play();
+      if (p && p.catch) { p.catch(function(){}); }
+    } catch (e) {}
+  }
+
   function forcePlaySplash(){
     var sp = document.getElementById('splash');
     if (!sp) return;
     var vids = sp.querySelectorAll('video');
     for (var i = 0; i < vids.length; i++) {
-      var v = vids[i];
-      try {
-        v.muted = true;
-        v.playsInline = true;
-        v.setAttribute('playsinline', '');
-        v.setAttribute('webkit-playsinline', '');
-        var pr = v.play();
-        if (pr && pr.catch) { pr.catch(function(){}); }
-      } catch (e) {}
+      (function(v){
+        hardPlay(v);
+        if (v.readyState >= 2) hardPlay(v);
+        ['loadedmetadata','loadeddata','canplay','canplaythrough','playing'].forEach(function(ev){
+          v.addEventListener(ev, function(){ hardPlay(v); });
+        });
+        var n = 0;
+        var timer = setInterval(function(){
+          hardPlay(v);
+          if (++n > 16 || (!v.paused && v.currentTime > 0.05)) clearInterval(timer);
+        }, 200);
+      })(vids[i]);
     }
   }
+
   function removeSplash(){
     var sp = document.getElementById('splash');
     if (!sp) return;
@@ -653,6 +672,7 @@ document.addEventListener('DOMContentLoaded', init);
       if (sp.parentNode) sp.parentNode.removeChild(sp);
     }, 650);
   }
+
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', forcePlaySplash);
   } else {
@@ -660,5 +680,6 @@ document.addEventListener('DOMContentLoaded', init);
   }
   window.addEventListener('touchstart', forcePlaySplash, { once: true });
   window.addEventListener('click', forcePlaySplash, { once: true });
+  window.addEventListener('load', forcePlaySplash);
   setTimeout(removeSplash, 3600);
 })();
