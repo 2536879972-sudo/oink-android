@@ -5,19 +5,19 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <meta name="theme-color" content="#0a0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>鍝€涓栫晫</title>
+<title>哀世界</title>
 <link rel="stylesheet" href="style-v2.css?v=2">
 </head>
 <body>
 
-<!-- ========== 鍚姩鍔ㄧ敾锛堟嫢鎶辫棰戯紝瀹屾暣鏄剧ず + 妯＄硦鑳屾櫙锛?========== -->
+<!-- ========== 鍚姩鍔ㄧ敾锛堟嫢鎶辫棰戯紝完整显示 + 模糊背景锛?========== -->
 <div id="splash">
   <video class="sp-video-blur" src="hug.mp4" autoplay muted playsinline preload="auto"></video>
   <video class="sp-video" src="hug.mp4" autoplay muted playsinline preload="auto"></video>
   <div class="sp-vignette"></div>
   <div class="sp-wm-cover"></div>
   <div class="sp-content">
-    <div class="sp-name">鍝€涓栫晫</div>
+    <div class="sp-name">哀世界</div>
     <div class="sp-sub">Chat with AI</div>
   </div>
 </div>
@@ -125,7 +125,7 @@
 
 <script src="app.js"></script>
 <script>
-/* 瀹氫綅姘村嵃閬尅鍧楋細璺熼殢瑙嗛 contain 鍚庣殑瀹為檯鏄剧ず鍖哄煙 */
+/* 瀹氫綅姘村嵃閬尅鍧楋細璺熼殢视频 contain 鍚庣殑瀹為檯鏄剧ず鍖哄煙 */
 (function(){
   function positionCover(){
     var v = document.querySelector('.sp-video');
@@ -133,7 +133,7 @@
     if (!v || !c) return;
 
     var r = v.getBoundingClientRect();
-    // 瑙嗛鏄?16:9锛宱bject-fit:contain 鈫?鍐呭灞呬腑锛屽彲鑳戒笂涓嬫湁榛戣竟
+    // 视频鏄?16:9锛宱bject-fit:contain 鈫?鍐呭灞呬腑锛屽彲鑳戒笂涓嬫湁榛戣竟
     var vw = r.width;
     var vh = vw * 9 / 16;
     if (vh > r.height){ vh = r.height; vw = vh * 16 / 9; }
