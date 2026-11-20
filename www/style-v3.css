@@ -393,3 +393,22 @@ input,textarea,select{font-family:inherit;font-size:16px}
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
 ::-webkit-scrollbar-track{background:transparent}
+
+/* ---- 语音浮层 ---- */
+.voice-dot{
+  width:64px;height:64px;border-radius:50%;
+  background:radial-gradient(circle,rgba(90,143,196,.95),rgba(90,143,196,.15));
+  animation:voicePulse 1.2s ease-in-out infinite;
+  margin-bottom:16px;
+}
+@keyframes voicePulse{
+  0%,100%{transform:scale(1);opacity:.95}
+  50%{transform:scale(1.18);opacity:.55}
+}
+.voice-tip{
+  font-size:15px;color:#a8c8e8;letter-spacing:1px;margin-bottom:22px;
+}
+.voice-cancel{
+  padding:9px 26px;border-radius:20px;border:1px solid rgba(168,200,232,.35);
+  background:rgba(255,255,255,.06);color:#dbe7f5;font-size:14px;cursor:pointer;
+}

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -6,11 +6,11 @@
 <meta name="theme-color" content="#0a0a0f">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>哀世界</title>
-<link rel="stylesheet" href="style-v3.css?v=3">
+<link rel="stylesheet" href="style-v3.css?v=4">
 </head>
 <body>
 
-<!-- ========== 鍚姩鍔ㄧ敾锛堟嫢鎶辫棰戯紝完整显示 + 模糊背景锛?========== -->
+<!-- ========== 启动动画 ========== -->
 <div id="splash">
   <video class="sp-video-blur" src="hug.mp4" autoplay muted playsinline preload="auto"></video>
   <video class="sp-video" src="hug.mp4" autoplay muted playsinline preload="auto"></video>
@@ -22,141 +22,108 @@
   </div>
 </div>
 
-<!-- ========== 渚ц竟鏍?========== -->
+<!-- ========== 侧边栏遮罩 ========== -->
 <div id="scrim"></div>
+
+<!-- ========== 会话侧边栏 ========== -->
 <aside id="sidebar">
   <div class="sb-head">
-    <div class="sb-title">浼氳瘽</div>
-    <button id="newChatBtn" class="sb-new" title="鏂板缓浼氳瘽">+</button>
+    <div class="sb-title">会话</div>
+    <button id="newChatBtn" class="sb-new" title="新建会话">+</button>
   </div>
   <div id="chatList" class="sb-list"></div>
   <div class="sb-foot">
-    <button id="settingsBtn" class="sb-btn">璁剧疆</button>
-    <button id="exportBtn" class="sb-btn">瀵煎嚭</button>
+    <button id="settingsBtn" class="sb-btn">设置</button>
+    <button id="exportBtn" class="sb-btn">导出</button>
   </div>
 </aside>
 
-<!-- ========== 涓荤晫闈?========== -->
+<!-- ========== 主界面 ========== -->
 <main id="app">
   <header id="topbar">
-    <button id="menuBtn" class="icon-btn" aria-label="鑿滃崟">
+    <button id="menuBtn" class="icon-btn" aria-label="菜单">
       <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
     </button>
     <div class="title-wrap">
-      <div id="chatTitle">鏂板璇?/div>
+      <div id="chatTitle">新对话</div>
       <div id="chatSub">DeepSeek</div>
     </div>
-    <button id="clearBtn" class="icon-btn" aria-label="娓呯┖">
+    <button id="clearBtn" class="icon-btn" aria-label="清空">
       <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
     </button>
   </header>
 
   <div id="messages"></div>
 
-  <!-- 鍥剧墖棰勮 -->
+  <!-- 图片预览 -->
   <div id="imgPreview" class="img-preview hidden">
     <img id="previewImg" alt="preview">
-    <button id="removeImg" class="preview-x">脳</button>
+    <button id="removeImg" class="preview-x">×</button>
   </div>
 
-  <!-- 杈撳叆鏍?-->
+  <!-- 输入栏 -->
   <footer id="inputbar">
-    <button id="attachBtn" class="icon-btn" title="鍥剧墖">
+    <button id="attachBtn" class="icon-btn" title="图片">
       <svg viewBox="0 0 24 24" width="22" height="22"><path d="M21 12.5V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h7M8 9h8M8 13h5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2" fill="none"/></svg>
     </button>
-    <button id="cameraBtn" class="icon-btn" title="鎷嶇収">
+    <button id="cameraBtn" class="icon-btn" title="拍照">
       <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 8h3l2-2h6l2 2h3v11H4z" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="2" fill="none"/></svg>
     </button>
-    <textarea id="input" rows="1" placeholder="闂偣浠€涔堚€? enterkeyhint="send"></textarea>
-    <button id="micBtn" class="icon-btn" title="璇煶">
+    <textarea id="input" rows="1" placeholder="问点什么…" enterkeyhint="send"></textarea>
+    <button id="micBtn" class="icon-btn" title="语音">
       <svg viewBox="0 0 24 24" width="22" height="22"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M5 11a7 7 0 0014 0M12 18v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
     </button>
-    <button id="sendBtn" class="send-btn" title="鍙戦€?>
+    <button id="sendBtn" class="send-btn" title="发送">
       <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12l16-8-6 16-2-6z" fill="currentColor"/></svg>
     </button>
   </footer>
 
-  <!-- 闅愯棌鐨?input -->
+  <!-- 隐藏的 input -->
   <input type="file" id="fileGallery" accept="image/*" hidden>
   <input type="file" id="fileCamera" accept="image/*" capture="environment" hidden>
 </main>
 
-<!-- ========== 璁剧疆闈㈡澘 ========== -->
+<!-- ========== 设置面板 ========== -->
 <div id="settingsSheet" class="sheet hidden">
   <div class="sheet-head">
-    <span>璁剧疆</span>
-    <button id="closeSettings" class="sheet-close">脳</button>
+    <span>设置</span>
+    <button id="closeSettings" class="sheet-close">×</button>
   </div>
   <div class="sheet-body">
     <label class="field">
-      <span>API 鍦板潃</span>
-      <input id="cfgEndpoint" type="url" placeholder="https://api.deepseek.com/v1/chat/completions">
-    </label>
-    <label class="field">
       <span>API Key</span>
-      <input id="cfgKey" type="password" placeholder="sk-鈥?>
+      <input id="cfgKey" type="password" placeholder="sk-..." autocomplete="off">
     </label>
     <label class="field">
-      <span>妯″瀷</span>
+      <span>接口地址</span>
+      <input id="cfgEndpoint" placeholder="https://api.deepseek.com/v1">
+    </label>
+    <label class="field">
+      <span>模型</span>
       <select id="cfgModel">
         <option value="deepseek-chat">deepseek-chat</option>
         <option value="deepseek-reasoner">deepseek-reasoner</option>
       </select>
     </label>
     <label class="field">
-      <span>娓╁害 <b id="tempVal">0.7</b></span>
-      <input id="cfgTemp" type="range" min="0" max="1.2" step="0.05" value="0.7">
+      <span>温度 <b id="tempVal">0.7</b></span>
+      <input id="cfgTemp" type="range" min="0" max="2" step="0.1" value="0.7">
     </label>
     <label class="field">
-      <span>绯荤粺鎻愮ず璇?/span>
-      <textarea id="cfgSystem" rows="3" placeholder="浣犳槸涓€涓湁甯姪鐨勫姪鎵?></textarea>
+      <span>系统提示</span>
+      <textarea id="cfgSystem" rows="3"></textarea>
     </label>
-    <button id="saveSettings" class="primary-btn">淇濆瓨</button>
-    <div class="hint">閰嶇疆淇濆瓨鍦ㄦ湰鏈猴紝涓嶄笂浼?/div>
+    <button id="saveSettings" class="primary-btn">保存</button>
   </div>
 </div>
 
-<!-- 璇煶褰曢煶瑕嗙洊灞?-->
+<!-- ========== 语音浮层 ========== -->
 <div id="voiceOverlay" class="voice-overlay hidden">
-  <div class="voice-wave"><span></span><span></span><span></span><span></span><span></span></div>
-  <div class="voice-text">姝ｅ湪鍚€?/div>
-  <button id="voiceCancel" class="voice-cancel">鍙栨秷</button>
+  <div class="voice-dot"></div>
+  <div class="voice-tip">正在听…</div>
+  <button id="voiceCancel" class="voice-cancel">取消</button>
 </div>
 
 <script src="app.js"></script>
-<script>
-/* 瀹氫綅姘村嵃閬尅鍧楋細璺熼殢视频 contain 鍚庣殑瀹為檯鏄剧ず鍖哄煙 */
-(function(){
-  function positionCover(){
-    var v = document.querySelector('.sp-video');
-    var c = document.querySelector('.sp-wm-cover');
-    if (!v || !c) return;
-
-    var r = v.getBoundingClientRect();
-    // 视频鏄?16:9锛宱bject-fit:contain 鈫?鍐呭灞呬腑锛屽彲鑳戒笂涓嬫湁榛戣竟
-    var vw = r.width;
-    var vh = vw * 9 / 16;
-    if (vh > r.height){ vh = r.height; vw = vh * 16 / 9; }
-
-    var left = r.left + (r.width  - vw) / 2;
-    var top  = r.top  + (r.height - vh) / 2;
-
-    var cw = vw * 0.22;
-    var ch = vh * 0.10;
-
-    c.style.width  = cw + 'px';
-    c.style.height = ch + 'px';
-    c.style.left   = (left + vw - cw - vw * 0.008) + 'px';
-    c.style.top    = (top  + vh - ch - vh * 0.015) + 'px';
-  }
-
-  document.addEventListener('DOMContentLoaded', positionCover);
-  window.addEventListener('load', positionCover);
-  window.addEventListener('resize', positionCover);
-  setTimeout(positionCover, 200);
-  setTimeout(positionCover, 800);
-  setTimeout(positionCover, 1600);
-})();
-</script>
 </body>
 </html>
