@@ -59,27 +59,30 @@ jobs:
           done
 
           # 3. 生成自定义自适应图标（指向 PNG foreground）
+          #    指向 mipmap/ic_launcher_foreground (PNG)，非 vector
           mkdir -p "$RES/mipmap-anydpi-v26"
           cat > "$RES/mipmap-anydpi-v26/ic_launcher.xml" <<'XML'
           <?xml version="1.0" encoding="utf-8"?>
           <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-              <background android:drawable="@color/ic_launcher_background"/>
+              <background android:drawable="@mipmap/ic_launcher_background"/>
               <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
           </adaptive-icon>
           XML
           cp "$RES/mipmap-anydpi-v26/ic_launcher.xml" "$RES/mipmap-anydpi-v26/ic_launcher_round.xml"
 
-          # 4. 背景色
-          mkdir -p "$RES/values"
-          cat > "$RES/values/ic_launcher_background.xml" <<'XML'
-          <?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <color name="ic_launcher_background">#121622</color>
-          </resources>
-          XML
-
-          # 5. 确保 foreground PNG 存在（xxxhdpi 最大）
+          # 4. 每密度都放 background（纯色图片）和 foreground
+          for pair in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
+            name="${pair%%:*}"
+            size="${pair##*:}"
+            mkdir -p "$RES/mipmap-$name"
+            # 背景：纯深色方块，尺寸和图标一致
+            cp "resources/icon-$name.png" "$RES/mipmap-$name/ic_launcher_background.png"
+          done
           cp resources/adaptive-foreground.png "$RES/mipmap-xxxhdpi/ic_launcher_foreground.png"
+          cp resources/adaptive-foreground.png "$RES/mipmap-xxhdpi/ic_launcher_foreground.png"
+          cp resources/adaptive-foreground.png "$RES/mipmap-xhdpi/ic_launcher_foreground.png"
+          cp resources/adaptive-foreground.png "$RES/mipmap-hdpi/ic_launcher_foreground.png"
+          cp resources/adaptive-foreground.png "$RES/mipmap-mdpi/ic_launcher_foreground.png"
 
           echo "--- after ---"
           find "$RES" -name "ic_launcher*" | sort
