@@ -66,15 +66,6 @@ function ensureChat() {
   return c;
 }
 
-/* ---------------- 启动动画 ---------------- */
-document.addEventListener('DOMContentLoaded', () => {
-  const sp = $('splash');
-  if (!sp) return;
-  setTimeout(() => {
-    sp.classList.add('hide');
-    setTimeout(() => { if (sp.parentNode) sp.remove(); }, 650);
-  }, 1900);
-});
 
 /* ---------------- 渲染：会话列表 ---------------- */
 function renderChatList() {
@@ -627,7 +618,7 @@ function init() {
     setTimeout(() => {
       openSettings();
       toast('首次使用，请填 API Key');
-    }, 2400);
+    }, 4500);
   }
 }
 
