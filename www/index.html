@@ -125,14 +125,22 @@
 
 <script src="app.js"></script>
 <script>
-/* 强制在 1.9s 后关掉启动页，不依赖 app.js */
-setTimeout(function(){
-  var sp = document.getElementById('splash');
-  if (sp) {
-    sp.classList.add('hide');
-    setTimeout(function(){ if (sp.parentNode) sp.remove(); }, 700);
+(function(){
+  console.log('[splash] inline script loaded');
+  function hideSplash(){
+    var sp = document.getElementById('splash');
+    console.log('[splash] hideSplash, found=' + !!sp);
+    if (!sp) return;
+    sp.style.transition = 'opacity .45s ease';
+    sp.style.opacity = '0';
+    sp.style.pointerEvents = 'none';
+    setTimeout(function(){
+      if (sp.parentNode) { sp.parentNode.removeChild(sp); console.log('[splash] removed'); }
+    }, 500);
   }
-}, 1900);
+  setTimeout(hideSplash, 1000);
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(hideSplash, 1000); });
+})();
 </script>
 <script>
 /* 瀹氫綅姘村嵃閬尅鍧楋細璺熼殢视频 contain 鍚庣殑瀹為檯鏄剧ず鍖哄煙 */
