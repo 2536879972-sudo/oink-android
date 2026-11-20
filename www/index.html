@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Oink</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ========== 启动动画 ========== -->
+<div id="splash">
+  <div class="sp-glow"></div>
+  <div class="sp-logo">
+    <svg viewBox="0 0 120 120" width="120" height="120">
+      <defs>
+        <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#ff8fb1"/>
+          <stop offset="100%" stop-color="#ff5c8a"/>
+        </linearGradient>
+      </defs>
+      <circle cx="60" cy="60" r="52" fill="none" stroke="url(#lg)" stroke-width="6" class="sp-ring"/>
+      <circle cx="60" cy="60" r="34" fill="url(#lg)" class="sp-dot"/>
+    </svg>
+  </div>
+  <div class="sp-name">Oink</div>
+  <div class="sp-sub">Chat with AI</div>
+</div>
+
+<!-- ========== 侧边栏 ========== -->
+<div id="scrim"></div>
+<aside id="sidebar">
+  <div class="sb-head">
+    <div class="sb-title">会话</div>
+    <button id="newChatBtn" class="sb-new" title="新建会话">+</button>
+  </div>
+  <div id="chatList" class="sb-list"></div>
+  <div class="sb-foot">
+    <button id="settingsBtn" class="sb-btn">设置</button>
+    <button id="exportBtn" class="sb-btn">导出</button>
+  </div>
+</aside>
+
+<!-- ========== 主界面 ========== -->
+<main id="app">
+  <header id="topbar">
+    <button id="menuBtn" class="icon-btn" aria-label="菜单">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M3 6h18M3 12h18M3 18h18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>
+    </button>
+    <div class="title-wrap">
+      <div id="chatTitle">新对话</div>
+      <div id="chatSub">DeepSeek</div>
+    </div>
+    <button id="clearBtn" class="icon-btn" aria-label="清空">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+  </header>
+
+  <div id="messages"></div>
+
+  <!-- 图片预览 -->
+  <div id="imgPreview" class="img-preview hidden">
+    <img id="previewImg" alt="preview">
+    <button id="removeImg" class="preview-x">×</button>
+  </div>
+
+  <!-- 输入栏 -->
+  <footer id="inputbar">
+    <button id="attachBtn" class="icon-btn" title="图片">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M21 12.5V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h7M8 9h8M8 13h5" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/><circle cx="17" cy="17" r="4" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+    </button>
+    <button id="cameraBtn" class="icon-btn" title="拍照">
+      <svg viewBox="0 0 24 24" width="22" height="22"><path d="M4 8h3l2-2h6l2 2h3v11H4z" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="12" cy="13" r="3.5" stroke="currentColor" stroke-width="2" fill="none"/></svg>
+    </button>
+    <textarea id="input" rows="1" placeholder="问点什么…" enterkeyhint="send"></textarea>
+    <button id="micBtn" class="icon-btn" title="语音">
+      <svg viewBox="0 0 24 24" width="22" height="22"><rect x="9" y="3" width="6" height="11" rx="3" stroke="currentColor" stroke-width="2" fill="none"/><path d="M5 11a7 7 0 0014 0M12 18v3" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    </button>
+    <button id="sendBtn" class="send-btn" title="发送">
+      <svg viewBox="0 0 24 24" width="20" height="20"><path d="M4 12l16-8-6 16-2-6z" fill="currentColor"/></svg>
+    </button>
+  </footer>
+
+  <!-- 隐藏的 input -->
+  <input type="file" id="fileGallery" accept="image/*" hidden>
+  <input type="file" id="fileCamera" accept="image/*" capture="environment" hidden>
+</main>
+
+<!-- ========== 设置面板 ========== -->
+<div id="settingsSheet" class="sheet hidden">
+  <div class="sheet-head">
+    <span>设置</span>
+    <button id="closeSettings" class="sheet-close">×</button>
+  </div>
+  <div class="sheet-body">
+    <label class="field">
+      <span>API 地址</span>
+      <input id="cfgEndpoint" type="url" placeholder="https://api.deepseek.com/v1/chat/completions">
+    </label>
+    <label class="field">
+      <span>API Key</span>
+      <input id="cfgKey" type="password" placeholder="sk-…">
+    </label>
+    <label class="field">
+      <span>模型</span>
+      <select id="cfgModel">
+        <option value="deepseek-chat">deepseek-chat</option>
+        <option value="deepseek-reasoner">deepseek-reasoner</option>
+      </select>
+    </label>
+    <label class="field">
+      <span>温度 <b id="tempVal">0.7</b></span>
+      <input id="cfgTemp" type="range" min="0" max="1.2" step="0.05" value="0.7">
+    </label>
+    <label class="field">
+      <span>系统提示词</span>
+      <textarea id="cfgSystem" rows="3" placeholder="你是一个有帮助的助手"></textarea>
+    </label>
+    <button id="saveSettings" class="primary-btn">保存</button>
+    <div class="hint">配置保存在本机，不上传</div>
+  </div>
+</div>
+
+<!-- 语音录音覆盖层 -->
+<div id="voiceOverlay" class="voice-overlay hidden">
+  <div class="voice-wave"><span></span><span></span><span></span><span></span><span></span></div>
+  <div class="voice-text">正在听…</div>
+  <button id="voiceCancel" class="voice-cancel">取消</button>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
