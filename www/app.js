@@ -624,8 +624,16 @@ function init() {
 
 document.addEventListener('DOMContentLoaded', init);
 
-/* ---------------- 启动页：强制播放视频 + 3.2s 后移除 ---------------- */
+/* ---------------- 启动页：poster 兜底 + 强制播放 + 3.2s 后移除 ---------------- */
 (function(){
+  var splash = document.getElementById('splash');
+
+  function markReady(){
+    if (splash && splash.parentNode && !splash.classList.contains('sp-ready')) {
+      splash.classList.add('sp-ready');
+    }
+  }
+
   function hardPlay(v){
     try {
       v.muted = true;
@@ -637,39 +645,41 @@ document.addEventListener('DOMContentLoaded', init);
       v.setAttribute('playsinline', '');
       v.setAttribute('webkit-playsinline', '');
       v.setAttribute('autoplay', '');
-      var p = v.play();
-      if (p && p.catch) { p.catch(function(){}); }
+      if (v.readyState >= 2) markReady();
+      var pr = v.play();
+      if (pr && pr.catch) { pr.catch(function(){}); }
     } catch (e) {}
   }
 
   function forcePlaySplash(){
-    var sp = document.getElementById('splash');
-    if (!sp) return;
-    var vids = sp.querySelectorAll('video');
+    if (!splash || !splash.parentNode) return;
+    var vids = splash.querySelectorAll('video');
     for (var i = 0; i < vids.length; i++) {
       (function(v){
         hardPlay(v);
-        if (v.readyState >= 2) hardPlay(v);
-        ['loadedmetadata','loadeddata','canplay','canplaythrough','playing'].forEach(function(ev){
-          v.addEventListener(ev, function(){ hardPlay(v); });
+        ['loadedmetadata','loadeddata','canplay','canplaythrough','playing','timeupdate'].forEach(function(ev){
+          v.addEventListener(ev, function(){
+            if (ev === 'timeupdate' && v.currentTime > 0.02) markReady();
+            hardPlay(v);
+          });
         });
         var n = 0;
         var timer = setInterval(function(){
           hardPlay(v);
-          if (++n > 16 || (!v.paused && v.currentTime > 0.05)) clearInterval(timer);
-        }, 200);
+          if (v.currentTime > 0.02) markReady();
+          if (++n > 20) clearInterval(timer);
+        }, 150);
       })(vids[i]);
     }
   }
 
   function removeSplash(){
-    var sp = document.getElementById('splash');
-    if (!sp) return;
-    sp.style.transition = 'opacity .6s ease';
-    sp.style.opacity = '0';
-    sp.style.pointerEvents = 'none';
+    if (!splash || !splash.parentNode) return;
+    splash.style.transition = 'opacity .6s ease';
+    splash.style.opacity = '0';
+    splash.style.pointerEvents = 'none';
     setTimeout(function(){
-      if (sp.parentNode) sp.parentNode.removeChild(sp);
+      if (splash.parentNode) splash.parentNode.removeChild(splash);
     }, 650);
   }
 
@@ -678,8 +688,8 @@ document.addEventListener('DOMContentLoaded', init);
   } else {
     forcePlaySplash();
   }
+  window.addEventListener('load', forcePlaySplash);
   window.addEventListener('touchstart', forcePlaySplash, { once: true });
   window.addEventListener('click', forcePlaySplash, { once: true });
-  window.addEventListener('load', forcePlaySplash);
   setTimeout(removeSplash, 3600);
 })();

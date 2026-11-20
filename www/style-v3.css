@@ -412,3 +412,18 @@ input,textarea,select{font-family:inherit;font-size:16px}
   padding:9px 26px;border-radius:20px;border:1px solid rgba(168,200,232,.35);
   background:rgba(255,255,255,.06);color:#dbe7f5;font-size:14px;cursor:pointer;
 }
+
+
+/* ===== 视频就绪前保持透明，避免 WebView 播放按钮闪现 ===== */
+#splash{
+  background:#07070b url("poster.jpg") center / cover no-repeat;
+}
+#splash video.sp-video,
+#splash video.sp-video-blur{
+  opacity:0;
+  transition:opacity .4s ease;
+}
+#splash.sp-ready video.sp-video,
+#splash.sp-ready video.sp-video-blur{
+  opacity:1;
+}
