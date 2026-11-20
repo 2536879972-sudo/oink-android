@@ -67,7 +67,7 @@ function ensureChat() {
 }
 
 /* ---------------- 启动动画 ---------------- */
-window.addEventListener('load', () => {
+document.addEventListener('DOMContentLoaded', () => {
   const sp = $('splash');
   if (!sp) return;
   setTimeout(() => {
