@@ -44,7 +44,7 @@ input,textarea,select{font-family:inherit;font-size:16px}
   to{opacity:0;visibility:hidden}
 }
 #splash{
-  animation:splashAutoOut .6s ease 1.3s forwards;
+  animation:splashAutoOut .8s ease 3.2s forwards;
 }
 
 

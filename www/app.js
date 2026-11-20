@@ -632,3 +632,42 @@ function init() {
 }
 
 document.addEventListener('DOMContentLoaded', init);
+
+
+/* ---------------- 启动页：强制播放视频 + 3.2s 后移除 ---------------- */
+(function(){
+  function forcePlaySplash(){
+    var sp = document.getElementById('splash');
+    if (!sp) return;
+    var vids = sp.querySelectorAll('video');
+    for (var i = 0; i < vids.length; i++) {
+      var v = vids[i];
+      try {
+        v.muted = true;
+        v.playsInline = true;
+        v.setAttribute('playsinline', '');
+        v.setAttribute('webkit-playsinline', '');
+        var pr = v.play();
+        if (pr && pr.catch) { pr.catch(function(){}); }
+      } catch (e) {}
+    }
+  }
+  function removeSplash(){
+    var sp = document.getElementById('splash');
+    if (!sp) return;
+    sp.style.transition = 'opacity .6s ease';
+    sp.style.opacity = '0';
+    sp.style.pointerEvents = 'none';
+    setTimeout(function(){
+      if (sp.parentNode) sp.parentNode.removeChild(sp);
+    }, 650);
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', forcePlaySplash);
+  } else {
+    forcePlaySplash();
+  }
+  window.addEventListener('touchstart', forcePlaySplash, { once: true });
+  window.addEventListener('click', forcePlaySplash, { once: true });
+  setTimeout(removeSplash, 3600);
+})();
