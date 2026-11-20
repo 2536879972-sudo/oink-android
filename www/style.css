@@ -42,22 +42,30 @@ input,textarea,select{font-family:inherit;font-size:16px}
 #splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}
 
 /* Ken Burns 鑳屾櫙锛氱紦鎱㈡斁澶?*/
-/* 视频背景 */
+/* 模糊背景层（填满屏幕，不裁切手） */
+.sp-video-blur{
+  position:absolute;inset:-12%;
+  width:124%;height:124%;
+  object-fit:cover;
+  filter:blur(40px) brightness(.38) saturate(1.3);
+  transform:scale(1.05);
+}
+/* 前景视频（完整显示，object-fit: contain） */
 .sp-video{
   position:absolute;inset:0;
   width:100%;height:100%;
-  object-fit:cover;
-  filter:brightness(.94) saturate(1.06);
+  object-fit:contain;
+  z-index:1;
 }
-/* 水印遮挡 */
+/* 水印遮挡：右下角 */
 .sp-wm-cover{
   position:absolute;
-  right:2%;bottom:6%;
-  width:28%;height:8%;
+  right:1.5%;bottom:calc((100% - 56.25vw) / 2 + 1.5%);
+  width:32%;height:7%;
   background:radial-gradient(ellipse at center,
-    rgba(7,7,11,.97) 25%,
-    rgba(7,7,11,.80) 50%,
-    transparent 78%);
+    rgba(7,7,11,.96) 30%,
+    rgba(7,7,11,.78) 55%,
+    transparent 80%);
   pointer-events:none;
   z-index:3;
 }
