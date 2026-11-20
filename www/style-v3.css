@@ -39,6 +39,14 @@ input,textarea,select{font-family:inherit;font-size:16px}
   transition:opacity .6s ease,transform .6s ease;
 }
 #splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+/* 纯 CSS 自动退出启动页，1.3s 后 0.6s 淡出，不依赖 JS */
+@keyframes splashAutoOut{
+  to{opacity:0;visibility:hidden}
+}
+#splash{
+  animation:splashAutoOut .6s ease 1.3s forwards;
+}
+
 
 /* Ken Burns 閼冲本娅欓敍姘辩处閹便垺鏂佹径?*/
 /* 模糊背景灞傦紙濉弧灞忓箷锛屼笉瑁佸垏鎵嬶級 */

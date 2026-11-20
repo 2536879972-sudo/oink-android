@@ -125,24 +125,6 @@
 
 <script src="app.js"></script>
 <script>
-(function(){
-  console.log('[splash] inline script loaded');
-  function hideSplash(){
-    var sp = document.getElementById('splash');
-    console.log('[splash] hideSplash, found=' + !!sp);
-    if (!sp) return;
-    sp.style.transition = 'opacity .45s ease';
-    sp.style.opacity = '0';
-    sp.style.pointerEvents = 'none';
-    setTimeout(function(){
-      if (sp.parentNode) { sp.parentNode.removeChild(sp); console.log('[splash] removed'); }
-    }, 500);
-  }
-  setTimeout(hideSplash, 1000);
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(hideSplash, 1000); });
-})();
-</script>
-<script>
 /* 瀹氫綅姘村嵃閬尅鍧楋細璺熼殢视频 contain 鍚庣殑瀹為檯鏄剧ず鍖哄煙 */
 (function(){
   function positionCover(){
