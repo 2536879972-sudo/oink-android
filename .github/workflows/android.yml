@@ -22,7 +22,11 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - uses: android-actions/setup-android@v3
+      - name: Accept Android SDK licenses
+        run: |
+          yes | sdkmanager --licenses > /dev/null 2>&1 || true
+          echo "ANDROID_HOME=$ANDROID_HOME"
+          ls $ANDROID_HOME 2>/dev/null || true
 
       - name: Install deps
         run: npm install --no-audit --no-fund
@@ -33,11 +37,11 @@ jobs:
       - name: Sync
         run: npx cap sync android
 
-      - name: Build
+      - name: Build debug APK
         working-directory: android
         run: |
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ./gradlew assembleDebug --no-daemon --stacktrace
 
       - uses: actions/upload-artifact@v4
         with:
