@@ -57,14 +57,12 @@ input,textarea,select{font-family:inherit;font-size:16px}
   object-fit:contain;
   z-index:1;
 }
-/* 水印遮挡：右下角 */
+/* 水印遮挡：由 JS 定位到视频右下角 */
 .sp-wm-cover{
   position:absolute;
-  right:1.5%;bottom:calc((100% - 56.25vw) / 2 + 1.5%);
-  width:32%;height:7%;
   background:radial-gradient(ellipse at center,
-    rgba(7,7,11,.96) 30%,
-    rgba(7,7,11,.78) 55%,
+    rgba(7,7,11,.95) 20%,
+    rgba(7,7,11,.75) 50%,
     transparent 80%);
   pointer-events:none;
   z-index:3;
@@ -84,7 +82,7 @@ input,textarea,select{font-family:inherit;font-size:16px}
   position:relative;z-index:2;
   height:100%;
   display:flex;flex-direction:column;align-items:center;justify-content:flex-end;
-  padding-bottom:15vh;
+  padding-bottom:4vh;
 }
 
 .sp-logo{
