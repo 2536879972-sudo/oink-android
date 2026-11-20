@@ -124,5 +124,39 @@
 </div>
 
 <script src="app.js"></script>
+<script>
+/* 定位水印遮挡块：跟随视频 contain 后的实际显示区域 */
+(function(){
+  function positionCover(){
+    var v = document.querySelector('.sp-video');
+    var c = document.querySelector('.sp-wm-cover');
+    if (!v || !c) return;
+
+    var r = v.getBoundingClientRect();
+    // 视频是 16:9，object-fit:contain → 内容居中，可能上下有黑边
+    var vw = r.width;
+    var vh = vw * 9 / 16;
+    if (vh > r.height){ vh = r.height; vw = vh * 16 / 9; }
+
+    var left = r.left + (r.width  - vw) / 2;
+    var top  = r.top  + (r.height - vh) / 2;
+
+    var cw = vw * 0.30;
+    var ch = vh * 0.14;
+
+    c.style.width  = cw + 'px';
+    c.style.height = ch + 'px';
+    c.style.left   = (left + vw - cw - vw * 0.008) + 'px';
+    c.style.top    = (top  + vh - ch - vh * 0.015) + 'px';
+  }
+
+  document.addEventListener('DOMContentLoaded', positionCover);
+  window.addEventListener('load', positionCover);
+  window.addEventListener('resize', positionCover);
+  setTimeout(positionCover, 200);
+  setTimeout(positionCover, 800);
+  setTimeout(positionCover, 1600);
+})();
+</script>
 </body>
 </html>
