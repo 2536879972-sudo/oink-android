@@ -1,0 +1,387 @@
+﻿/* ============================================================
+   Oink Android 閳?濞ｈ精澹?iOS 妞嬪孩鐗?   ============================================================ */
+:root{
+  --bg:#07070b;
+  --bg2:#0d1017;
+  --card:#161c26;
+  --card2:#1e2634;
+  --text:#eef2f8;
+  --text2:#8e9bad;
+  --text3:#5a6478;
+  --accent:#5a8fc4;
+  --accent2:#a8c8e8;
+  --user-bubble:#4a7db0;
+  --ai-bubble:rgba(22,28,38,.82);
+  --border:rgba(255,255,255,.08);
+  --safe-t:env(safe-area-inset-top,0px);
+  --safe-b:env(safe-area-inset-bottom,0px);
+  --radius:18px;
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden}
+body{
+  background:var(--bg) url('bg.jpg') center center / cover no-repeat fixed;
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+button{font-family:inherit;cursor:pointer;border:none;background:none;color:inherit}
+input,textarea,select{font-family:inherit;font-size:16px}
+
+/* ============================================================
+   閸氼垰濮╅崝銊ф暰
+   ============================================================ */
+#splash{
+  position:fixed;inset:0;z-index:9999;overflow:hidden;
+  background:#07070b;
+  transition:opacity .6s ease,transform .6s ease;
+}
+#splash.hide{opacity:0;transform:scale(1.04);pointer-events:none}
+
+/* Ken Burns 閼冲本娅欓敍姘辩处閹便垺鏂佹径?*/
+/* 模糊背景灞傦紙濉弧灞忓箷锛屼笉瑁佸垏鎵嬶級 */
+.sp-video-blur{
+  position:absolute;inset:-12%;
+  width:124%;height:124%;
+  object-fit:cover;
+  filter:blur(40px) brightness(.38) saturate(1.3);
+  transform:scale(1.05);
+}
+/* 鍓嶆櫙视频锛堝畬鏁存樉绀猴紝object-fit: contain锛?*/
+.sp-video{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;
+  z-index:1;
+}
+/* 姘村嵃閬尅锛氱敱 JS 瀹氫綅鍒拌棰戝彸涓嬭 */
+.sp-wm-cover{
+  position:absolute;
+  right:0;
+  bottom:0;
+  width:32%;
+  height:18%;
+  background:radial-gradient(ellipse at 70% 75%,
+    rgba(7,7,11,.92) 0%,
+    rgba(7,7,11,.75) 35%,
+    rgba(7,7,11,.35) 65%,
+    transparent 88%);
+  pointer-events:none;
+  z-index:3;
+  filter:blur(10px);
+}
+
+/* 閺嗘顫?*/
+.sp-vignette{
+  position:absolute;inset:0;
+  background:radial-gradient(circle at 50% 42%,
+    rgba(7,7,11,.10) 0%,
+    rgba(7,7,11,.50) 52%,
+    rgba(7,7,11,.94) 100%);
+}
+
+/* 閸愬懎顔愮仦?*/
+.sp-content{
+  position:absolute;
+  left:0;right:0;bottom:0;top:0;
+  z-index:2;
+  display:flex;flex-direction:column;
+  align-items:center;
+  justify-content:flex-end;
+  padding-bottom:6vh;
+  width:100%;
+}
+
+.sp-logo{
+  opacity:0;transform:translateY(26px) scale(.85);
+  animation:logoIn .95s cubic-bezier(.34,1.4,.64,1) .55s forwards;
+}
+@keyframes logoIn{
+  to{opacity:1;transform:translateY(0) scale(1)}
+}
+.sp-ring{stroke-dasharray:330;stroke-dashoffset:330;animation:ringDraw 1.15s ease-out .75s forwards}
+@keyframes ringDraw{to{stroke-dashoffset:0}}
+.sp-dot{transform-origin:60px 60px;animation:dotPulse 2.4s ease-in-out 1.3s infinite}
+@keyframes dotPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+
+.sp-name{
+  margin-top:20px;font-size:32px;font-weight:700;letter-spacing:4px;
+  color:#fff;
+  text-shadow:0 2px 24px rgba(140,190,235,.55);
+  opacity:0;transform:translateY(16px);
+  animation:fadeUp .75s ease-out 1.15s forwards;
+}
+.sp-sub{
+  margin-top:9px;font-size:12px;color:rgba(200,215,235,.62);letter-spacing:2.4px;
+  opacity:0;animation:fadeUp .75s ease-out 1.45s forwards;
+}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+
+/* ============================================================
+   娓氀嗙珶閺?   ============================================================ */
+#scrim{
+  position:fixed;inset:0;z-index:50;background:rgba(0,0,0,.55);
+  backdrop-filter:blur(2px);opacity:0;pointer-events:none;transition:opacity .28s;
+}
+#scrim.show{opacity:1;pointer-events:auto}
+
+#sidebar{
+  position:fixed;top:0;left:0;bottom:0;z-index:60;
+  width:78%;max-width:300px;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  transform:translateX(-100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  padding-top:var(--safe-t);
+}
+#sidebar.open{transform:translateX(0)}
+
+.sb-head{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 12px}
+.sb-title{font-size:20px;font-weight:700;letter-spacing:.5px}
+.sb-new{
+  width:34px;height:34px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:#fff;font-size:22px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 14px rgba(90,143,196,.35);
+}
+.sb-new:active{transform:scale(.9)}
+
+.sb-list{flex:1;overflow-y:auto;padding:6px 10px}
+.chat-item{
+  padding:11px 13px;border-radius:12px;margin-bottom:5px;
+  display:flex;align-items:center;gap:10px;
+  transition:background .15s;
+}
+.chat-item:active{background:var(--card)}
+.chat-item.active{background:var(--card);border-left:2px solid var(--accent)}
+.chat-item .ci-title{flex:1;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chat-item .ci-del{
+  width:24px;height:24px;border-radius:50%;color:var(--text3);font-size:15px;
+  display:flex;align-items:center;justify-content:center;
+}
+.chat-item .ci-del:active{background:rgba(90,143,196,.2);color:var(--accent)}
+
+.sb-foot{padding:12px 14px calc(14px + var(--safe-b));display:flex;gap:8px;border-top:1px solid var(--border)}
+.sb-btn{
+  flex:1;padding:10px;border-radius:11px;background:var(--card);
+  font-size:14px;color:var(--text2);transition:.15s;
+}
+.sb-btn:active{background:var(--card2);color:var(--text)}
+
+/* ============================================================
+   娑撹崵鏅棃?   ============================================================ */
+#app{position:fixed;inset:0;display:flex;flex-direction:column;padding-top:var(--safe-t);background:rgba(7,7,11,.58)}
+
+#topbar{
+  height:56px;display:flex;align-items:center;gap:8px;
+  padding:0 10px;
+  background:rgba(10,10,15,.82);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.icon-btn{
+  width:40px;height:40px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--text2);transition:.15s;
+}
+.icon-btn:active{background:var(--card);color:var(--text)}
+.title-wrap{flex:1;text-align:center;overflow:hidden}
+#chatTitle{font-size:16px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#chatSub{font-size:11px;color:var(--text3);margin-top:1px}
+
+#messages{
+  flex:1;overflow-y:auto;overflow-x:hidden;
+  padding:16px 14px 10px;
+  display:flex;flex-direction:column;gap:14px;
+  scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
+}
+
+/* 濞戝牊浼?*/
+.msg{display:flex;gap:9px;max-width:100%;animation:msgIn .28s ease-out}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{flex-direction:row-reverse}
+.avatar{
+  width:30px;height:30px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;
+}
+.msg.user .avatar{background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff}
+.msg.ai .avatar{background:var(--card2);color:var(--text2)}
+
+.bubble{
+  max-width:78%;padding:10px 14px;border-radius:var(--radius);
+  font-size:15px;line-height:1.6;
+  word-break:break-word;white-space:pre-wrap;
+  position:relative;
+}
+.msg.user .bubble{
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:#fff;border-bottom-right-radius:6px;
+}
+.msg.ai .bubble{
+  background:var(--ai-bubble);color:var(--text);
+  border-bottom-left-radius:6px;
+  border:1px solid var(--border);
+}
+.bubble img{max-width:100%;border-radius:12px;margin-bottom:6px;display:block}
+
+/* 閹垫挸鐡ч幐鍥┿仛閸?*/
+.typing{display:inline-flex;gap:4px;padding:4px 0}
+.typing span{
+  width:7px;height:7px;border-radius:50%;background:var(--text3);
+  animation:bounce 1.3s infinite;
+}
+.typing span:nth-child(2){animation-delay:.16s}
+.typing span:nth-child(3){animation-delay:.32s}
+@keyframes bounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-5px);opacity:1}}
+
+/* 缁岃櫣濮搁幀?*/
+#empty{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;color:var(--text3);padding:40px 20px;text-align:center;
+}
+#empty .e-icon{
+  width:70px;height:70px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(168,200,232,.16),rgba(90,143,196,.08));
+  display:flex;align-items:center;justify-content:center;font-size:30px;
+}
+#empty .e-title{font-size:17px;color:var(--text2);font-weight:600}
+#empty .e-sub{font-size:13px;line-height:1.6;max-width:260px}
+
+/* ============================================================
+   鏉堟挸鍙嗛弽?   ============================================================ */
+#inputbar{
+  display:flex;align-items:flex-end;gap:4px;
+  padding:8px 8px calc(8px + var(--safe-b));
+  background:rgba(10,10,15,.92);
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+  flex-shrink:0;
+}
+#input{
+  flex:1;min-height:42px;max-height:130px;
+  padding:11px 14px;border-radius:21px;
+  background:var(--card);color:var(--text);
+  border:1px solid var(--border);
+  resize:none;outline:none;overflow-y:auto;
+  line-height:1.4;
+  transition:border-color .2s;
+}
+#input:focus{border-color:rgba(90,143,196,.4)}
+#input::placeholder{color:var(--text3)}
+
+.send-btn{
+  width:42px;height:42px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:#fff;display:flex;align-items:center;justify-content:center;
+  transition:.15s;box-shadow:0 4px 14px rgba(90,143,196,.3);
+}
+.send-btn:active{transform:scale(.9)}
+.send-btn:disabled{opacity:.35;box-shadow:none}
+.send-btn.stop{background:var(--card2)}
+
+/* 閸ュ墽澧栨０鍕潔閺?*/
+.img-preview{
+  position:relative;margin:0 14px 6px;
+  align-self:flex-start;
+  animation:msgIn .2s ease-out;
+}
+.img-preview img{width:76px;height:76px;object-fit:cover;border-radius:12px;border:1px solid var(--border)}
+.preview-x{
+  position:absolute;top:-6px;right:-6px;
+  width:22px;height:22px;border-radius:50%;
+  background:#4a7db0;color:#fff;font-size:14px;line-height:1;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 6px rgba(0,0,0,.4);
+}
+.hidden{display:none!important}
+
+/* ============================================================
+   鐠佸墽鐤嗛棃銏℃緲
+   ============================================================ */
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:80;
+  background:var(--bg2);
+  border-radius:22px 22px 0 0;
+  max-height:88vh;
+  transform:translateY(100%);
+  transition:transform .32s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;
+  box-shadow:0 -8px 40px rgba(0,0,0,.6);
+}
+.sheet:not(.hidden){transform:translateY(0)}
+.sheet-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 20px 12px;
+  font-size:18px;font-weight:700;
+  border-bottom:1px solid var(--border);
+}
+.sheet-close{width:32px;height:32px;border-radius:50%;background:var(--card);color:var(--text2);font-size:20px;line-height:1}
+.sheet-body{padding:16px 20px calc(24px + var(--safe-b));overflow-y:auto;display:flex;flex-direction:column;gap:16px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>span{font-size:13px;color:var(--text2);font-weight:500}
+.field input[type=url],.field input[type=password],.field select,.field textarea{
+  padding:12px 14px;border-radius:12px;
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text);outline:none;
+  transition:border-color .2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:rgba(90,143,196,.5)}
+.field textarea{resize:vertical;min-height:70px;line-height:1.5}
+.field input[type=range]{
+  -webkit-appearance:none;height:5px;border-radius:3px;
+  background:var(--card2);outline:none;
+}
+.field input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;width:20px;height:20px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  box-shadow:0 2px 8px rgba(90,143,196,.4);
+}
+.primary-btn{
+  padding:14px;border-radius:13px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  color:#fff;font-size:16px;font-weight:600;
+  box-shadow:0 6px 20px rgba(90,143,196,.3);
+  transition:.15s;
+}
+.primary-btn:active{transform:scale(.97)}
+.hint{font-size:12px;color:var(--text3);text-align:center}
+
+/* ============================================================
+   鐠囶參鐓剁憰鍡欐磰鐏?   ============================================================ */
+.voice-overlay{
+  position:fixed;inset:0;z-index:90;
+  background:rgba(10,10,15,.94);
+  backdrop-filter:blur(10px);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;
+  animation:msgIn .2s ease-out;
+}
+.voice-wave{display:flex;align-items:center;gap:6px;height:60px}
+.voice-wave span{
+  width:6px;border-radius:3px;
+  background:linear-gradient(180deg,var(--accent2),var(--accent));
+  animation:wave 1s ease-in-out infinite;
+}
+.voice-wave span:nth-child(1){height:20px;animation-delay:0s}
+.voice-wave span:nth-child(2){height:40px;animation-delay:.12s}
+.voice-wave span:nth-child(3){height:56px;animation-delay:.24s}
+.voice-wave span:nth-child(4){height:40px;animation-delay:.36s}
+.voice-wave span:nth-child(5){height:20px;animation-delay:.48s}
+@keyframes wave{0%,100%{transform:scaleY(.4);opacity:.5}50%{transform:scaleY(1);opacity:1}}
+.voice-text{font-size:17px;color:var(--text2);letter-spacing:1px}
+.voice-cancel{
+  padding:10px 28px;border-radius:24px;
+  background:var(--card);color:var(--text2);font-size:15px;
+}
+
+/* ============================================================
+   濠婃艾濮╅弶?   ============================================================ */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+::-webkit-scrollbar-track{background:transparent}
