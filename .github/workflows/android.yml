@@ -37,6 +37,40 @@ jobs:
       - name: Sync
         run: npx cap sync android
 
+      - name: Apply custom icons
+        run: |
+          RES=android/app/src/main/res
+          for pair in mdpi:48 hdpi:72 xhdpi:96 xxhdpi:144 xxxhdpi:192; do
+            name="${pair%%:*}"
+            mkdir -p "$RES/mipmap-$name"
+            cp "resources/icon-$name.png" "$RES/mipmap-$name/ic_launcher.png"
+            cp "resources/icon-$name-round.png" "$RES/mipmap-$name/ic_launcher_round.png"
+            echo "icon $name ok"
+          done
+          cp resources/adaptive-foreground.png "$RES/mipmap-xxxhdpi/ic_launcher_foreground.png"
+          # 替换任何默认 v26 自适应图标
+          for d in "$RES"/mipmap-anydpi-v26*; do
+            [ -d "$d" ] || continue
+            cat > "$d/ic_launcher.xml" <<'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+              <background android:drawable="@color/ic_launcher_background"/>
+              <foreground android:drawable="@mipmap/ic_launcher_foreground"/>
+          </adaptive-icon>
+          XML
+            cp "$d/ic_launcher.xml" "$d/ic_launcher_round.xml"
+            echo "adaptive icon $d ok"
+          done
+          # 背景色
+          mkdir -p "$RES/values"
+          cat > "$RES/values/ic_launcher_background.xml" <<'XML'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="ic_launcher_background">#121622</color>
+          </resources>
+          XML
+          echo "done"
+
       - name: Build debug APK
         working-directory: android
         run: |
